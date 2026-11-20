@@ -3,21 +3,22 @@
  * Source of Truth: Stitch Navigation Reference
  * 
  * Tabs:
- * - Home
- * - Requests
- * - Center Create Action (+) Circular Teal Elevated FAB
- * - Bookings
- * - Profile
+ * - HomeStack (Home -> Select Building)
+ * - RequestsStack (Requests -> Create Request)
+ * - Center Create Action (+) Circular Teal Elevated FAB -> navigates to Create Request
+ * - BookingsStack (Bookings)
+ * - ProfileStack (Profile)
  */
 
 import React from 'react';
-import { View, StyleSheet, Pressable, Alert, Platform } from 'react-native';
+import { View, StyleSheet, Pressable, Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { MainTabParamList } from './types';
-import { HomeScreen } from '../features/home/screens/HomeScreen';
-import { RequestsScreen } from '../features/requests/screens/RequestsScreen';
-import { BookingsScreen } from '../features/bookings/screens/BookingsScreen';
-import { ProfileScreen } from '../features/profile/screens/ProfileScreen';
+import { HomeStackNavigator } from './stacks/HomeStackNavigator';
+import { RequestsStackNavigator } from './stacks/RequestsStackNavigator';
+import { BookingsStackNavigator } from './stacks/BookingsStackNavigator';
+import { ProfileStackNavigator } from './stacks/ProfileStackNavigator';
 import {
   HomeTabIcon,
   RequestsTabIcon,
@@ -29,8 +30,8 @@ import { colors, shadows, typography } from '../theme';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
-// Dummy screen for center action tab
 const EmptyScreen = () => null;
+const renderNullLabel = () => null;
 
 const renderHomeIcon = ({ color, size }: { color: string; size: number }) => (
   <HomeTabIcon color={color} size={size} />
@@ -48,32 +49,25 @@ const renderProfileIcon = ({ color, size }: { color: string; size: number }) => 
   <ProfileTabIcon color={color} size={size} />
 );
 
-const handleCenterCreatePress = () => {
-  Alert.alert(
-    'New Resident Action',
-    'Choose a resident service to submit:',
-    [
-      { text: 'Create Maintenance Request', onPress: () => {} },
-      { text: 'Book Amenity', onPress: () => {} },
-      { text: 'Issue Visitor Pass', onPress: () => {} },
-      { text: 'Cancel', style: 'cancel' },
-    ]
-  );
-};
+interface CenterFabButtonProps {
+  onPress?: () => void;
+}
 
-const CenterFabButton = () => (
+const CenterFabButton: React.FC<CenterFabButtonProps> = ({ onPress }) => (
   <View style={styles.fabContainer}>
     <Pressable
-      onPress={handleCenterCreatePress}
-      style={({ pressed }) => [
-        styles.fabButton,
-        pressed && styles.fabPressed,
-      ]}
-      accessibilityLabel="Create Request or Booking"
+      onPress={onPress}
+      style={({ pressed }) => [styles.fabButton, pressed && styles.fabPressed]}
+      accessibilityRole="button"
+      accessibilityLabel="Create Request"
     >
       <PlusIcon size={26} color={colors.onPrimary} />
     </Pressable>
   </View>
+);
+
+const CreateTabBarButton = (props: any) => (
+  <CenterFabButton onPress={props.onPress} />
 );
 
 export const MainTabNavigator: React.FC = () => {
@@ -88,20 +82,35 @@ export const MainTabNavigator: React.FC = () => {
       }}
     >
       <Tab.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{
-          tabBarLabel: 'Home',
-          tabBarIcon: renderHomeIcon,
+        name="HomeTab"
+        component={HomeStackNavigator}
+        options={({ route }) => {
+          const routeName = getFocusedRouteNameFromRoute(route);
+          const isFullscreen =
+            routeName === 'SelectBuilding' ||
+            routeName === 'Amenities' ||
+            routeName === 'AmenityDetails' ||
+            routeName === 'BookingSuccess' ||
+            routeName === 'BookingConflict';
+          return {
+            tabBarLabel: 'Home',
+            tabBarIcon: renderHomeIcon,
+            tabBarStyle: isFullscreen ? { display: 'none' } : styles.tabBar,
+          };
         }}
       />
 
       <Tab.Screen
-        name="Requests"
-        component={RequestsScreen}
-        options={{
-          tabBarLabel: 'Requests',
-          tabBarIcon: renderRequestsIcon,
+        name="RequestsTab"
+        component={RequestsStackNavigator}
+        options={({ route }) => {
+          const routeName = getFocusedRouteNameFromRoute(route);
+          const isFullscreen = routeName === 'CreateRequest';
+          return {
+            tabBarLabel: 'Requests',
+            tabBarIcon: renderRequestsIcon,
+            tabBarStyle: isFullscreen ? { display: 'none' } : styles.tabBar,
+          };
         }}
       />
 
@@ -109,24 +118,39 @@ export const MainTabNavigator: React.FC = () => {
       <Tab.Screen
         name="CreateActionPlaceholder"
         component={EmptyScreen}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            navigation.navigate('RequestsTab', { screen: 'CreateRequest' });
+          },
+        })}
         options={{
-          tabBarLabel: () => null,
-          tabBarButton: CenterFabButton,
+          tabBarLabel: renderNullLabel,
+          tabBarButton: CreateTabBarButton,
         }}
       />
 
       <Tab.Screen
-        name="Bookings"
-        component={BookingsScreen}
-        options={{
-          tabBarLabel: 'Bookings',
-          tabBarIcon: renderBookingsIcon,
+        name="BookingsTab"
+        component={BookingsStackNavigator}
+        options={({ route }) => {
+          const routeName = getFocusedRouteNameFromRoute(route);
+          const isFullscreen =
+            routeName === 'Amenities' ||
+            routeName === 'AmenityDetails' ||
+            routeName === 'BookingSuccess' ||
+            routeName === 'BookingConflict';
+          return {
+            tabBarLabel: 'Bookings',
+            tabBarIcon: renderBookingsIcon,
+            tabBarStyle: isFullscreen ? { display: 'none' } : styles.tabBar,
+          };
         }}
       />
 
       <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
+        name="ProfileTab"
+        component={ProfileStackNavigator}
         options={{
           tabBarLabel: 'Profile',
           tabBarIcon: renderProfileIcon,

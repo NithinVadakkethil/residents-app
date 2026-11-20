@@ -1,0 +1,101 @@
+/**
+ * Amenities & Slots Test Fixtures & Mocks
+ * Used strictly for unit tests and isolated component development.
+ * Production hooks connect to the real amenitiesApi.
+ */
+
+import { AssetDto, SlotDto } from '../api/amenities.dto';
+
+export const MOCK_ASSETS: AssetDto[] = [
+  {
+    id: '1',
+    name: 'Swimming Pool',
+    category: 'Outdoor',
+    location: 'Podium Level',
+    image_url: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=600&q=80',
+    is_active: true,
+    is_available: true,
+    status: 'available',
+    capacity: 20,
+    court_count: 1,
+    description: 'Heated Olympic-size rooftop swimming pool with dedicated lap lanes and sun loungers.',
+  },
+  {
+    id: '2',
+    name: 'Badminton Court',
+    category: 'Indoor',
+    location: 'Clubhouse Ground Floor',
+    image_url: 'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?auto=format&fit=crop&w=600&q=80',
+    is_active: true,
+    is_available: true,
+    status: 'available',
+    capacity: 4,
+    court_count: 2,
+    description: 'Well maintained indoor badminton courts with premium wooden flooring and high-bay lighting. Rackets and shuttlecocks are not provided.',
+  },
+  {
+    id: '3',
+    name: 'Football Court',
+    category: 'Outdoor',
+    location: 'North Ground',
+    image_url: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=600&q=80',
+    is_active: true,
+    is_available: true,
+    status: 'available',
+    capacity: 12,
+    court_count: 1,
+    description: 'All-weather 5-a-side synthetic turf football pitch with floodlights.',
+  },
+  {
+    id: '4',
+    name: 'Tennis Court',
+    category: 'Outdoor',
+    location: 'East Sports Wing',
+    image_url: 'https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?auto=format&fit=crop&w=600&q=80',
+    is_active: true,
+    is_available: true,
+    status: 'available',
+    capacity: 4,
+    court_count: 1,
+    description: 'Championship hard-surface tennis court equipped with evening lighting.',
+  },
+  {
+    id: '5',
+    name: 'Gym & Fitness Center',
+    category: 'Indoor',
+    location: 'Clubhouse 2nd Floor',
+    image_url: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=600&q=80',
+    is_active: true,
+    is_available: true,
+    status: 'limited_slots',
+    capacity: 15,
+    court_count: 1,
+    description: 'State-of-the-art strength and cardio equipment with resident personal trainers.',
+  },
+  {
+    id: '6',
+    name: 'Community Hall',
+    category: 'Indoor',
+    location: 'Tower A Ground Floor',
+    image_url: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=600&q=80',
+    is_active: true,
+    is_available: true,
+    status: 'available',
+    capacity: 50,
+    court_count: 1,
+    description: 'Multi-purpose event venue with presentation audio/visual setup and banqueting space.',
+  },
+];
+
+export const MOCK_SLOTS: SlotDto[] = [
+  { id: '101', start_time: '06:00:00', end_time: '07:00:00', is_available: true, status: 'available' },
+  { id: '102', start_time: '07:00:00', end_time: '08:00:00', is_available: true, status: 'available' },
+  { id: '103', start_time: '08:00:00', end_time: '09:00:00', is_available: true, status: 'available' },
+  { id: '104', start_time: '09:00:00', end_time: '10:00:00', is_available: false, status: 'booked', is_booked: true },
+  { id: '105', start_time: '10:00:00', end_time: '11:00:00', is_available: true, status: 'available' },
+  { id: '106', start_time: '11:00:00', end_time: '12:00:00', is_available: true, status: 'available' },
+  { id: '107', start_time: '16:00:00', end_time: '17:00:00', is_available: true, status: 'available' },
+  { id: '108', start_time: '17:00:00', end_time: '18:00:00', is_available: true, status: 'available' },
+  { id: '109', start_time: '18:00:00', end_time: '19:00:00', is_available: false, status: 'booked', is_booked: true },
+  { id: '110', start_time: '19:00:00', end_time: '20:00:00', is_available: true, status: 'available' },
+];

@@ -1,12 +1,12 @@
 /**
  * Building Selector Pill
- * Allows resident to switch between towers / units
+ * Reusable pill allowing resident to switch between properties / units
  * Source of Truth: Stitch Screen 04_Home, 06_Select_Building
  */
 
 import React from 'react';
 import { Pressable, Text, StyleSheet, View } from 'react-native';
-import { useBuildingStore } from '../../store/useBuildingStore';
+import { useCurrentBuilding } from '../../features/buildings/hooks/useCurrentBuilding';
 import { colors, radius, typography, spacing, shadows } from '../../theme';
 import { BuildingIcon, ChevronDownIcon } from './Icons';
 
@@ -17,7 +17,14 @@ interface BuildingSelectorPillProps {
 export const BuildingSelectorPill: React.FC<BuildingSelectorPillProps> = ({
   onPress,
 }) => {
-  const { selectedBuilding } = useBuildingStore();
+  const { selectedBuilding, selectedUnit } = useCurrentBuilding();
+
+  const buildingName = selectedBuilding?.name || 'Select Property';
+  const subText = selectedUnit?.number
+    ? `Unit ${selectedUnit.number}`
+    : selectedBuilding?.tower
+      ? `Tower ${selectedBuilding.tower}`
+      : selectedBuilding?.address || 'Tap to select';
 
   return (
     <Pressable
@@ -26,16 +33,18 @@ export const BuildingSelectorPill: React.FC<BuildingSelectorPillProps> = ({
         styles.container,
         pressed && styles.pressed,
       ]}
+      accessibilityRole="button"
+      accessibilityLabel={`Selected building: ${buildingName}`}
     >
       <View style={styles.iconCircle}>
         <BuildingIcon size={16} color={colors.primary} />
       </View>
       <View style={styles.textContainer}>
         <Text style={styles.buildingName} numberOfLines={1}>
-          {selectedBuilding.name}
+          {buildingName}
         </Text>
         <Text style={styles.communityName} numberOfLines={1}>
-          {selectedBuilding.community}
+          {subText}
         </Text>
       </View>
       <ChevronDownIcon size={14} color={colors.outline} />

@@ -24,13 +24,13 @@ interface SplashScreenProps {
 
 export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
   const { initializeSession } = useAuthStore();
-  const { initializeBuilding } = useBuildingStore();
+  const { hydrateSelectedBuildingId } = useBuildingStore();
 
   useEffect(() => {
     const bootstrap = async () => {
       await Promise.all([
         initializeSession(),
-        initializeBuilding(),
+        hydrateSelectedBuildingId(),
       ]);
 
       // Allow luxury splash branding to show briefly
@@ -42,7 +42,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
     };
 
     bootstrap();
-  }, [initializeSession, initializeBuilding, onFinish]);
+  }, [initializeSession, hydrateSelectedBuildingId, onFinish]);
 
   return (
     <Screen
